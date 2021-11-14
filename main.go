@@ -113,6 +113,7 @@ func handleTTS(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "audio/ogg")
 	w.Header().Set("Cache-Control", "public, max-age=86400, immutable")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(resp.AudioContent)
 }
 
