@@ -1,17 +1,20 @@
-FROM golang:alpine as builder
+FROM golang:alpine AS builder
 
-COPY . /go/src/github.com/Luzifer/webtts
-WORKDIR /go/src/github.com/Luzifer/webtts
+COPY . /src/webtts
+WORKDIR /src/webtts
 
 RUN set -ex \
  && apk add --update git \
  && go install \
       -ldflags "-X main.version=$(git describe --tags --always || echo dev)" \
-      -mod=readonly
+      -mod=readonly \
+      -modcacherw \
+      -trimpath
+
 
 FROM alpine:latest
 
-LABEL maintainer "Knut Ahlers <knut@ahlers.me>"
+LABEL maintainer="Knut Ahlers <knut@ahlers.me>"
 
 RUN set -ex \
  && apk --no-cache add \
