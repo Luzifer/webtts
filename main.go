@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"errors"
@@ -11,12 +10,12 @@ import (
 	"sort"
 	"time"
 
-	texttospeech "cloud.google.com/go/texttospeech/apiv1"
-	log "github.com/sirupsen/logrus"
-	texttospeechpb "google.golang.org/genproto/googleapis/cloud/texttospeech/v1"
+	"github.com/sirupsen/logrus"
 
 	httpHelper "github.com/Luzifer/go_helpers/v2/http"
 	"github.com/Luzifer/rconfig/v2"
+	"github.com/Luzifer/webtts/pkg/synth"
+	"github.com/Luzifer/webtts/pkg/synth/google"
 )
 
 var (
@@ -27,48 +26,57 @@ var (
 		VersionAndExit bool   `flag:"version" default:"false" description:"Prints current version and exits"`
 	}{}
 
-	ttsClient *texttospeech.Client
-
 	version = "dev"
 )
 
-func init() {
+func initApp() (err error) {
 	rconfig.AutoEnv(true)
-	if err := rconfig.ParseAndValidate(&cfg); err != nil {
-		log.Fatalf("Unable to parse commandline options: %s", err)
+	if err = rconfig.ParseAndValidate(&cfg); err != nil {
+		return fmt.Errorf("parsing CLI options: %w", err)
 	}
 
-	if cfg.VersionAndExit {
-		fmt.Printf("webtts %s\n", version)
-		os.Exit(0)
+	l, err := logrus.ParseLevel(cfg.LogLevel)
+	if err != nil {
+		return fmt.Errorf("parsing log level: %w", err)
 	}
+	logrus.SetLevel(l)
 
-	if l, err := log.ParseLevel(cfg.LogLevel); err != nil {
-		log.WithError(err).Fatal("Unable to parse log level")
-	} else {
-		log.SetLevel(l)
-	}
+	return nil
 }
 
 func main() {
 	var err error
-	if ttsClient, err = texttospeech.NewClient(context.Background()); err != nil {
-		log.WithError(err).Fatal("Unable to create TTS client")
+	if err = initApp(); err != nil {
+		logrus.WithError(err).Fatal("initializing application")
 	}
-	defer ttsClient.Close()
+
+	if cfg.VersionAndExit {
+		fmt.Printf("webtts %s\n", version) //nolint:forbidigo
+		os.Exit(0)
+	}
 
 	http.HandleFunc("/tts.ogg", handleTTS)
 
 	var h http.Handler = http.DefaultServeMux
 	h = httpHelper.NewHTTPLogHandler(h)
 
-	http.ListenAndServe(cfg.Listen, h)
+	server := &http.Server{
+		Addr:              cfg.Listen,
+		Handler:           h,
+		ReadHeaderTimeout: time.Second,
+	}
+
+	logrus.WithField("addr", cfg.Listen).Info("starting server")
+	if err = server.ListenAndServe(); err != nil {
+		logrus.WithError(err).Fatal("starting server")
+	}
 }
 
 func handleTTS(w http.ResponseWriter, r *http.Request) {
 	var (
 		text      = r.FormValue("text")
 		lang      = r.FormValue("lang")
+		provider  = r.FormValue("provider")
 		signature = r.FormValue("signature")
 		validTo   = r.FormValue("valid-to")
 		voice     = r.FormValue("voice")
@@ -86,35 +94,37 @@ func handleTTS(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = checkSignature(signature, r); err != nil {
-		log.WithError(err).Error("Signature not validated")
+		logrus.WithError(err).Error("Signature not validated")
 		http.Error(w, "validation failed", http.StatusBadRequest)
 		return
 	}
 
-	req := texttospeechpb.SynthesizeSpeechRequest{
-		Input: &texttospeechpb.SynthesisInput{
-			InputSource: &texttospeechpb.SynthesisInput_Text{Text: text},
-		},
-		Voice: &texttospeechpb.VoiceSelectionParams{
-			LanguageCode: defaultVal(lang, "en-US"),
-			Name:         defaultVal(voice, "en-US-Wavenet-D"),
-		},
-		AudioConfig: &texttospeechpb.AudioConfig{
-			AudioEncoding: texttospeechpb.AudioEncoding_OGG_OPUS,
-		},
+	var p synth.Provider
+	switch provider {
+	case "google", "gcp":
+		if p, err = google.New(); err != nil {
+			logrus.WithError(err).Error("creating google provider")
+			http.Error(w, "creating provider", http.StatusInternalServerError)
+			return
+		}
+
+	default:
+		logrus.WithField("provider", provider).Error("Invalid provider")
+		http.Error(w, "invalid provider", http.StatusBadRequest)
+		return
 	}
 
-	resp, err := ttsClient.SynthesizeSpeech(r.Context(), &req)
+	audio, err := p.GenerateAudio(r.Context(), defaultVal(voice, "en-US-Wavenet-D"), defaultVal(lang, "en-US"), text)
 	if err != nil {
-		log.WithError(err).Error("Unable to synthesize speech")
-		http.Error(w, "unable to synthesize speech", http.StatusInternalServerError)
+		logrus.WithError(err).Error("generating audio")
+		http.Error(w, "audio generation failed", http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "audio/ogg")
 	w.Header().Set("Cache-Control", "public, max-age=86400, immutable")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Write(resp.AudioContent)
+	_, _ = w.Write(audio)
 }
 
 func checkSignature(signature string, r *http.Request) error {
@@ -133,7 +143,7 @@ func checkSignature(signature string, r *http.Request) error {
 		if v == "" {
 			continue
 		}
-		fmt.Fprintf(hash, "%s=%s\n", k, v)
+		fmt.Fprintf(hash, "%s=%s\n", k, v) //nolint:errcheck
 	}
 
 	if signature != fmt.Sprintf("%x", hash.Sum(nil)) {
