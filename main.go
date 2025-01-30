@@ -15,6 +15,7 @@ import (
 	httpHelper "github.com/Luzifer/go_helpers/v2/http"
 	"github.com/Luzifer/rconfig/v2"
 	"github.com/Luzifer/webtts/pkg/synth"
+	"github.com/Luzifer/webtts/pkg/synth/azure"
 	"github.com/Luzifer/webtts/pkg/synth/google"
 )
 
@@ -22,7 +23,7 @@ var (
 	cfg = struct {
 		Listen         string `flag:"listen" default:":3000" description:"Port/IP to listen on"`
 		LogLevel       string `flag:"log-level" default:"info" description:"Log level (debug, info, warn, error, fatal)"`
-		SignatureKey   string `flag:"signature-key" default:"" description:"Key to sign requests with" validate:"nonzero"`
+		SignatureKey   string `flag:"signature-key" default:"" description:"Key to sign requests with"`
 		VersionAndExit bool   `flag:"version" default:"false" description:"Prints current version and exits"`
 	}{}
 
@@ -40,6 +41,10 @@ func initApp() (err error) {
 		return fmt.Errorf("parsing log level: %w", err)
 	}
 	logrus.SetLevel(l)
+
+	if cfg.SignatureKey == "" {
+		logrus.Warn("no signature key is set, all requests are valid, do not do this in production!")
+	}
 
 	return nil
 }
@@ -101,6 +106,13 @@ func handleTTS(w http.ResponseWriter, r *http.Request) {
 
 	var p synth.Provider
 	switch provider {
+	case "azure":
+		if p, err = azure.New(); err != nil {
+			logrus.WithError(err).Error("creating azure provider")
+			http.Error(w, "creating provider", http.StatusInternalServerError)
+			return
+		}
+
 	case "google", "gcp":
 		if p, err = google.New(); err != nil {
 			logrus.WithError(err).Error("creating google provider")
@@ -128,6 +140,11 @@ func handleTTS(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkSignature(signature string, r *http.Request) error {
+	if cfg.SignatureKey == "" {
+		// No key given, should only happen in development
+		return nil
+	}
+
 	keys := []string{}
 	for k := range r.URL.Query() {
 		if k == "signature" {
