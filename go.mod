@@ -7,7 +7,7 @@ toolchain go1.23.4
 require (
 	cloud.google.com/go/texttospeech v1.12.1
 	github.com/Luzifer/go_helpers/v2 v2.25.0
-	github.com/Luzifer/rconfig/v2 v2.5.2
+	github.com/Luzifer/rconfig/v2 v2.6.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
 )
