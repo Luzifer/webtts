@@ -1,3 +1,11 @@
+# 0.4.1 / 2026-02-20
+
+  * fix(deps): update module cloud.google.com/go/texttospeech to v1.16.0
+  * fix(deps): update module github.com/luzifer/rconfig/v2 to v2.6.1
+  * fix(deps): update module github.com/sirupsen/logrus to v1.9.4
+  * fix(deps): update module github.com/stretchr/testify to v1.11.1
+  * chore: replace go\_helpers/v2 monolith
+
 # 0.4.0 / 2025-04-18
 
   * Add docker publish for ghcr.io
