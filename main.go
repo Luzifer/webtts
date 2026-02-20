@@ -12,7 +12,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	httpHelper "github.com/Luzifer/go_helpers/v2/http"
+	httpHelper "github.com/Luzifer/go_helpers/http"
 	"github.com/Luzifer/rconfig/v2"
 	"github.com/Luzifer/webtts/pkg/synth"
 	"github.com/Luzifer/webtts/pkg/synth/azure"

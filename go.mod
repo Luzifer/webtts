@@ -1,12 +1,12 @@
 module github.com/Luzifer/webtts
 
-go 1.24.0
+go 1.25.7
 
 toolchain go1.26.0
 
 require (
 	cloud.google.com/go/texttospeech v1.16.0
-	github.com/Luzifer/go_helpers/v2 v2.25.2
+	github.com/Luzifer/go_helpers/http v0.12.2
 	github.com/Luzifer/rconfig/v2 v2.6.1
 	github.com/sirupsen/logrus v1.9.4
 	github.com/stretchr/testify v1.11.1
@@ -18,6 +18,8 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.8.0 // indirect
 	cloud.google.com/go/longrunning v0.6.7 // indirect
+	github.com/Luzifer/go_helpers/accesslogger v0.1.1 // indirect
+	github.com/Luzifer/go_helpers/str v0.4.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
