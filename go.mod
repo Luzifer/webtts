@@ -2,7 +2,7 @@ module github.com/Luzifer/webtts
 
 go 1.25.7
 
-toolchain go1.26.1
+toolchain go1.26.2
 
 require (
 	cloud.google.com/go/texttospeech v1.17.0
