@@ -8,8 +8,8 @@ cloud.google.com/go/compute/metadata v0.9.0 h1:pDUj4QMoPejqq20dK0Pg2N4yG9zIkYGdB
 cloud.google.com/go/compute/metadata v0.9.0/go.mod h1:E0bWwX5wTnLPedCKqk3pJmVgCBSM6qQI1yTBdEb3C10=
 cloud.google.com/go/longrunning v0.9.0 h1:0EzbDEGsAvOZNbqXopgniY0w0a1phvu5IdUFq8grmqY=
 cloud.google.com/go/longrunning v0.9.0/go.mod h1:pkTz846W7bF4o2SzdWJ40Hu0Re+UoNT6Q5t+igIcb8E=
-cloud.google.com/go/texttospeech v1.19.0 h1:4AfzGgXxLCaXgoH1rlRzvsnhHXsI3Ef4gBB5EZTreKQ=
-cloud.google.com/go/texttospeech v1.19.0/go.mod h1:p/UVJILAo/S5vsJaWZVdDRzNzA7wXIA+hTACvpMeOBk=
+cloud.google.com/go/texttospeech v1.20.0 h1:K9LjSjyWg3iHkZo7U4XOhN4xfg3ka4vLLmyNw4Q3Jjc=
+cloud.google.com/go/texttospeech v1.20.0/go.mod h1:p/UVJILAo/S5vsJaWZVdDRzNzA7wXIA+hTACvpMeOBk=
 github.com/Luzifer/go_helpers/accesslogger v0.1.1 h1:z9tg/Sd508g5OR1rG2kmzvM1zgg1JGyMYWuWWCvkPyA=
 github.com/Luzifer/go_helpers/accesslogger v0.1.1/go.mod h1:x4K138iYEIhpVAjoxuXyTTzKiZLJEu4Lu8DX+zeDUzw=
 github.com/Luzifer/go_helpers/http v0.12.3 h1:WhGWMtk+XM/MOSmB1R7LO+/7V3YnSYO3UkZ19RCrSyY=

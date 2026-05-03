@@ -5,7 +5,7 @@ go 1.25.7
 toolchain go1.26.2
 
 require (
-	cloud.google.com/go/texttospeech v1.19.0
+	cloud.google.com/go/texttospeech v1.20.0
 	github.com/Luzifer/go_helpers/http v0.12.3
 	github.com/Luzifer/rconfig/v2 v2.6.1
 	github.com/sirupsen/logrus v1.9.4
