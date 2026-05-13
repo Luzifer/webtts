@@ -1,3 +1,4 @@
+// WebTTS Server for OBS Overlays
 package main
 
 import (
@@ -10,10 +11,10 @@ import (
 	"sort"
 	"time"
 
+	httphelper "github.com/Luzifer/go_helpers/http"
+	"github.com/Luzifer/rconfig/v2"
 	"github.com/sirupsen/logrus"
 
-	httpHelper "github.com/Luzifer/go_helpers/http"
-	"github.com/Luzifer/rconfig/v2"
 	"github.com/Luzifer/webtts/pkg/synth"
 	"github.com/Luzifer/webtts/pkg/synth/azure"
 	"github.com/Luzifer/webtts/pkg/synth/google"
@@ -56,14 +57,14 @@ func main() {
 	}
 
 	if cfg.VersionAndExit {
-		fmt.Printf("webtts %s\n", version) //nolint:forbidigo
+		fmt.Printf("webtts %s\n", version) //nolint:forbidigo // fine to print version to stdout
 		os.Exit(0)
 	}
 
 	http.HandleFunc("/tts.ogg", handleTTS)
 
 	var h http.Handler = http.DefaultServeMux
-	h = httpHelper.NewHTTPLogHandler(h)
+	h = httphelper.NewHTTPLogHandler(h)
 
 	server := &http.Server{
 		Addr:              cfg.Listen,
@@ -145,7 +146,7 @@ func checkSignature(signature string, r *http.Request) error {
 		return nil
 	}
 
-	keys := []string{}
+	var keys []string
 	for k := range r.URL.Query() {
 		if k == "signature" {
 			continue
@@ -160,7 +161,7 @@ func checkSignature(signature string, r *http.Request) error {
 		if v == "" {
 			continue
 		}
-		fmt.Fprintf(hash, "%s=%s\n", k, v) //nolint:errcheck
+		_, _ = fmt.Fprintf(hash, "%s=%s\n", k, v)
 	}
 
 	if signature != fmt.Sprintf("%x", hash.Sum(nil)) {

@@ -14,5 +14,5 @@ func TestSSMLGeneration(t *testing.T) {
 
 	data, err := io.ReadAll(r)
 	require.NoError(t, err)
-	assert.Equal(t, string(data), `<speak version="1.0" xml:lang="en-US"><voice name="en-US-ChristopherNeural">excited to try text to speech!</voice></speak>`)
+	assert.Equal(t, `<speak version="1.0" xml:lang="en-US"><voice name="en-US-ChristopherNeural">excited to try text to speech!</voice></speak>`, string(data))
 }

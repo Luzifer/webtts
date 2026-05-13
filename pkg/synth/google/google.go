@@ -7,6 +7,7 @@ import (
 
 	texttospeech "cloud.google.com/go/texttospeech/apiv1"
 	"cloud.google.com/go/texttospeech/apiv1/texttospeechpb"
+	"github.com/sirupsen/logrus"
 
 	"github.com/Luzifer/webtts/pkg/synth"
 )
@@ -29,7 +30,11 @@ func (Provider) GenerateAudio(ctx context.Context, voice, language, text string)
 	if err != nil {
 		return nil, fmt.Errorf("creating TTS client: %w", err)
 	}
-	defer ttsClient.Close() //nolint:errcheck
+	defer func() {
+		if err := ttsClient.Close(); err != nil {
+			logrus.WithError(err).Error("closing Google TTS client")
+		}
+	}()
 
 	req := texttospeechpb.SynthesizeSpeechRequest{
 		Input: &texttospeechpb.SynthesisInput{

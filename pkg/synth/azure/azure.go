@@ -10,8 +10,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/Luzifer/webtts/pkg/synth"
 	"github.com/sirupsen/logrus"
+
+	"github.com/Luzifer/webtts/pkg/synth"
 )
 
 type (
@@ -62,7 +63,7 @@ func (p Provider) GenerateAudio(ctx context.Context, voice, language, text strin
 	req.Header.Set("Content-Type", "application/ssml+xml")
 	req.Header.Set("Ocp-Apim-Subscription-Key", speechKey)
 	req.Header.Set("User-Agent", "webtts/0.x (https://github.com/Luzifer/webtts)")
-	req.Header.Set("X-Microsoft-OutputFormat", "ogg-48khz-16bit-mono-opus")
+	req.Header.Set("X-Microsoft-Outputformat", "ogg-48khz-16bit-mono-opus")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
