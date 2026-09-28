@@ -1,11 +1,11 @@
 module github.com/Luzifer/webtts
 
-go 1.25.7
+go 1.26.0
 
 toolchain go1.27.1
 
 require (
-	cloud.google.com/go/texttospeech v1.22.0
+	cloud.google.com/go/texttospeech v1.23.0
 	github.com/Luzifer/go_helpers/http v0.12.10
 	github.com/Luzifer/rconfig/v2 v2.6.2
 	github.com/sirupsen/logrus v1.10.2
@@ -44,7 +44,7 @@ require (
 	google.golang.org/api v0.287.1 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260630182238-925bb5da69e7 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260630182238-925bb5da69e7 // indirect
-	google.golang.org/grpc v1.82.0 // indirect
+	google.golang.org/grpc v1.83.1 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/validator.v2 v2.0.1 // indirect
 )
