@@ -12,8 +12,8 @@ cloud.google.com/go/texttospeech v1.24.1 h1:SKiAtdswfnGi/DQDfDJn6QJSkY6OaBeIdmGH
 cloud.google.com/go/texttospeech v1.24.1/go.mod h1:iY63YX+FQoUXcd3o9xwTYt8cULfU5fcVsjSFV2Fmpq4=
 github.com/Luzifer/go_helpers/accesslogger v0.1.2 h1:iDzSeFPrRIPmvWTERBkJuXIn2I9d64AVWT99Y8ZLJ28=
 github.com/Luzifer/go_helpers/accesslogger v0.1.2/go.mod h1:x4K138iYEIhpVAjoxuXyTTzKiZLJEu4Lu8DX+zeDUzw=
-github.com/Luzifer/go_helpers/http v0.12.10 h1:ZTCNbnoi5UuBNHnqAzeEf13/yhXscI8mWCyLnsJi+6c=
-github.com/Luzifer/go_helpers/http v0.12.10/go.mod h1:0MPZqf5KKXbVPHA9zdtDG21SeCGSGXVmDWMQW1LDHUU=
+github.com/Luzifer/go_helpers/http v0.12.12 h1:ig3l+MgV50Y3joGPwtM9hy33hZjvxpmb3VVwUph8YU4=
+github.com/Luzifer/go_helpers/http v0.12.12/go.mod h1:DhpLPdAtXNMj5AHufmXi6zMZJ9QyGuG/EPdU5VqKL2g=
 github.com/Luzifer/rconfig/v2 v2.6.2 h1:Dx9WetHvyUx84P8D7WDr7OvsEsD0XT3t04DtCSqT95o=
 github.com/Luzifer/rconfig/v2 v2.6.2/go.mod h1:F8bKJYwzwQT0m0V0N6S8uS7tI6jm05ANCe3D0EHuX/w=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
